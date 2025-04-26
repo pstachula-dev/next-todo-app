@@ -9,10 +9,11 @@ const createJestConfig = nextJest({
 
 // Add any custom config to be passed to Jest
 const config: Config = {
+  // A superset of the JSDOM environment for Jest that respects Node.js globals.
+  testEnvironment: "jest-fixed-jsdom",
   coverageProvider: "v8",
-  testEnvironment: "jsdom",
   moduleNameMapper: {
-    "^@/components/(.*)$": "<rootDir>/components/$1",
+    "^@/(.*)$": "<rootDir>/$1",
   },
   setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
 };
