@@ -1,14 +1,13 @@
+import { envVariables } from "../env";
 import { ApiClientError } from "./api-client-error";
 
 interface ApiClientOptions {
-  baseUrl?: string;
+  baseUrl: string;
   init?: RequestInit;
 }
 
 export class ApiClient {
-  constructor(private options: ApiClientOptions) {
-    if (!options.baseUrl) throw new Error("baseUrl is required");
-  }
+  constructor(private options: ApiClientOptions) {}
 
   async get<T>(endpoint: string) {
     try {
@@ -36,5 +35,5 @@ export class ApiClient {
 }
 
 export const apiClient = new ApiClient({
-  baseUrl: process.env.NEXT_PUBLIC_API_URL,
+  baseUrl: envVariables.NEXT_PUBLIC_API_URL,
 });

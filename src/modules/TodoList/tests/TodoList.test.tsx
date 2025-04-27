@@ -1,7 +1,9 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { TodoList } from "../TodoList";
+
 import { TodoDTO } from "@/libs/dto/TodoDTO";
+
+import { TodoList } from "../TodoList";
 
 const user = userEvent.setup();
 
@@ -17,7 +19,6 @@ describe("TodoList", () => {
       render(<TodoList todos={mockTodos} />);
 
       mockTodos.forEach((todo) => {
-        // Check if each todo item is rendered
         expect(screen.getByText(todo.title)).toBeInTheDocument();
       });
     });
@@ -27,11 +28,8 @@ describe("TodoList", () => {
 
       const checkboxes = screen.getAllByRole("checkbox");
 
-      // Verify first todo is unchecked
       expect(checkboxes[0]).not.toBeChecked();
-      // Verify second todo is checked
       expect(checkboxes[1]).toBeChecked();
-      // Verify third todo is unchecked
       expect(checkboxes[2]).not.toBeChecked();
     });
 
@@ -39,9 +37,8 @@ describe("TodoList", () => {
       render(<TodoList todos={mockTodos} />);
 
       // Verify filter component exists
-      expect(screen.getByTestId("todo-filters")).toBeInTheDocument();
+      expect(screen.getByRole("combobox")).toBeInTheDocument();
 
-      // Verify all filter options are present
       expect(screen.getByText("All")).toBeInTheDocument();
       expect(screen.getByText("Completed")).toBeInTheDocument();
       expect(screen.getByText("Uncompleted")).toBeInTheDocument();
@@ -61,11 +58,9 @@ describe("TodoList", () => {
     it("filters completed todos correctly", async () => {
       render(<TodoList todos={mockTodos} />);
 
-      await user.selectOptions(screen.getByTestId("todo-filters"), "completed");
+      await user.selectOptions(screen.getByRole("combobox"), "completed");
 
-      // Verify completed todo is shown
       expect(screen.getByText("Task 2")).toBeInTheDocument();
-      // Verify incomplete todos are hidden
       expect(screen.queryByText("Task 1")).not.toBeInTheDocument();
       expect(screen.queryByText("Task 3")).not.toBeInTheDocument();
     });
@@ -73,22 +68,17 @@ describe("TodoList", () => {
     it("filters uncompleted todos correctly", async () => {
       render(<TodoList todos={mockTodos} />);
 
-      await user.selectOptions(
-        screen.getByTestId("todo-filters"),
-        "uncompleted",
-      );
+      await user.selectOptions(screen.getByRole("combobox"), "uncompleted");
 
-      // Verify incomplete todos are shown
       expect(screen.getByText("Task 1")).toBeInTheDocument();
       expect(screen.getByText("Task 3")).toBeInTheDocument();
-      // Verify completed todo is hidden
       expect(screen.queryByText("Task 2")).not.toBeInTheDocument();
     });
 
     it("shows all todos when filter is changed from completed to all", async () => {
       render(<TodoList todos={mockTodos} />);
 
-      const filterSelect = screen.getByTestId("todo-filters");
+      const filterSelect = screen.getByRole("combobox");
       await user.selectOptions(filterSelect, "completed");
       await user.selectOptions(filterSelect, "all");
 
@@ -105,12 +95,10 @@ describe("TodoList", () => {
 
       const firstTodoCheckbox = screen.getByLabelText("Task 1");
 
-      // Verify initial unchecked state
       expect(firstTodoCheckbox).not.toBeChecked();
 
       await user.click(firstTodoCheckbox);
 
-      // Verify checkbox toggled to checked
       expect(firstTodoCheckbox).toBeChecked();
     });
 
@@ -120,7 +108,7 @@ describe("TodoList", () => {
       const firstTodoCheckbox = screen.getByLabelText("Task 1");
       await user.click(firstTodoCheckbox);
 
-      const filterSelect = screen.getByTestId("todo-filters");
+      const filterSelect = screen.getByRole("combobox");
       await user.selectOptions(filterSelect, "completed");
 
       // Verify newly completed todo visible in completed filter
@@ -132,19 +120,16 @@ describe("TodoList", () => {
     it("updates filtered view when todo status changes", async () => {
       render(<TodoList todos={mockTodos} />);
 
-      const filterSelect = screen.getByTestId("todo-filters");
+      const filterSelect = screen.getByRole("combobox");
       await user.selectOptions(filterSelect, "completed");
 
-      // Verify incomplete todo hidden
       expect(screen.queryByText("Task 1")).not.toBeInTheDocument();
-      // Verify completed todo visible
       expect(screen.getByText("Task 2")).toBeInTheDocument();
 
       await user.selectOptions(filterSelect, "uncompleted");
       const firstTodoCheckbox = screen.getByLabelText("Task 1");
       await user.click(firstTodoCheckbox);
 
-      // Verify todo disappears after completion
       expect(screen.queryByText("Task 1")).not.toBeInTheDocument();
     });
   });
@@ -153,7 +138,6 @@ describe("TodoList", () => {
     it("handles empty todo list", () => {
       render(<TodoList todos={[]} />);
 
-      // Verify empty state message
       expect(screen.getByText("Empty todo list")).toBeInTheDocument();
     });
 
@@ -162,9 +146,8 @@ describe("TodoList", () => {
         <TodoList todos={[{ id: 1, title: "Task 1", completed: false }]} />,
       );
 
-      await user.selectOptions(screen.getByTestId("todo-filters"), "completed");
+      await user.selectOptions(screen.getByRole("combobox"), "completed");
 
-      // Verify todo hidden when no matches
       expect(screen.queryByText("Task 1")).not.toBeInTheDocument();
     });
   });

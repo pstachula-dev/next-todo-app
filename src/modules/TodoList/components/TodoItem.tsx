@@ -1,4 +1,5 @@
 import { ChangeEvent } from "react";
+
 import { TodoDTO } from "@/libs/dto/TodoDTO";
 
 export const TodoItem = ({
@@ -15,7 +16,7 @@ export const TodoItem = ({
           id={id.toString()}
           type="checkbox"
           onChange={onChange}
-          defaultChecked={completed}
+          checked={completed}
         />
         {title}
       </label>

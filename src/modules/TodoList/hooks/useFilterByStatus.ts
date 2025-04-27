@@ -1,5 +1,7 @@
-import { TodoDTO } from "@/libs/dto/TodoDTO";
 import { useMemo } from "react";
+
+import { TodoDTO } from "@/libs/dto/TodoDTO";
+
 import { FilterStatus } from "../TodoList.types";
 
 export const useFilterByStatus = (todos: TodoDTO[], status: FilterStatus) => {

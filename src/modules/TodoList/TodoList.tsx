@@ -1,11 +1,13 @@
 "use client";
 
 import { ChangeEvent, useCallback, useState } from "react";
-import { FilterStatus } from "./TodoList.types";
-import { TodoItem } from "./components/TodoItem";
+
 import { TodoDTO } from "@/libs/dto/TodoDTO";
+
 import { TodoFilters } from "./components/TodoFilters";
+import { TodoItem } from "./components/TodoItem";
 import { useFilterByStatus } from "./hooks/useFilterByStatus";
+import { FilterStatus } from "./TodoList.types";
 
 export const TodoList = ({ todos: todosData }: { todos: TodoDTO[] }) => {
   const [todos, setTodos] = useState(todosData);
@@ -14,14 +16,15 @@ export const TodoList = ({ todos: todosData }: { todos: TodoDTO[] }) => {
 
   const onTodoItemChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
-      const { id, checked } = event.target;
+      const { id, checked: completed } = event.target;
 
-      const updatedTodos = todos.map((todo) =>
-        todo.id === parseInt(id) ? { ...todo, completed: checked } : todo,
+      setTodos((prev) =>
+        prev.map((todo) =>
+          todo.id === parseInt(id) ? { ...todo, completed } : todo,
+        ),
       );
-      setTodos(updatedTodos);
     },
-    [todos],
+    [],
   );
 
   const hasTodos = todoByFilter.length > 0;

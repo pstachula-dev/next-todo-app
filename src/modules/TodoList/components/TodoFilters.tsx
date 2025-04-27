@@ -1,4 +1,7 @@
+import { ChangeEvent } from "react";
+
 import { isFilterStatusGuard } from "@/utils/isFilterStatusGuard";
+
 import { FilterStatus } from "../TodoList.types";
 
 const options: { label: string; value: FilterStatus }[] = [
@@ -16,7 +19,7 @@ export const TodoFilters = ({
 }) => {
   const handleFilterChange = ({
     target: { value },
-  }: React.ChangeEvent<HTMLSelectElement>) => {
+  }: ChangeEvent<HTMLSelectElement>) => {
     if (isFilterStatusGuard(value)) {
       onChange(value);
     }
@@ -24,10 +27,9 @@ export const TodoFilters = ({
 
   return (
     <select
-      data-testid="todo-filters"
       className="bg-zinc-200 rounded-md p-2"
       id="filter"
-      defaultValue={filter}
+      value={filter}
       onChange={handleFilterChange}
     >
       {options.map(({ label, value }) => (
